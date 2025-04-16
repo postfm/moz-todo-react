@@ -1,5 +1,11 @@
-import { ChangeEvent, FormEvent, useState } from 'react';
-
+import { ChangeEvent, FormEvent, useEffect, useRef, useState } from 'react';
+function usePrevious(value) {
+  const ref = useRef();
+  useEffect(() => {
+    ref.current = value;
+  });
+  return ref.current;
+}
 interface TodoProps {
   name: string;
   id: string;
@@ -13,6 +19,11 @@ export default function Todo(props: TodoProps) {
   const [isEditing, setEditing] = useState(false);
   const [newName, setNewName] = useState('');
 
+  const editFieldRef = useRef(null);
+  const editButtonRef = useRef(null);
+
+  const wasEditing = usePrevious(isEditing);
+
   function handleChange(evt: ChangeEvent<HTMLInputElement>) {
     setNewName(evt.target.value);
   }
@@ -23,6 +34,14 @@ export default function Todo(props: TodoProps) {
     setNewName('');
     setEditing(false);
   }
+
+  useEffect(() => {
+    if (!wasEditing && isEditing) {
+      editFieldRef.current.focus();
+    } else if (wasEditing && !isEditing) {
+      editButtonRef.current.focus();
+    }
+  }, [isEditing, wasEditing]);
 
   const editingTemplate = (
     <form
@@ -42,6 +61,7 @@ export default function Todo(props: TodoProps) {
           type='text'
           value={newName}
           onChange={handleChange}
+          ref={editFieldRef}
         />
       </div>
       <div className='btn-group'>
@@ -84,6 +104,7 @@ export default function Todo(props: TodoProps) {
           type='button'
           className='btn'
           onClick={() => setEditing(true)}
+          ref={editButtonRef}
         >
           Edit <span className='visually-hidden'>{props.name}</span>
         </button>

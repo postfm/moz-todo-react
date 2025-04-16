@@ -1,8 +1,16 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import FilterButton from './components/FilterButton';
 import Form from './components/Form';
 import Todo from './components/Todo';
 import { nanoid } from 'nanoid';
+
+function usePrevious(value: number) {
+  const ref = useRef();
+  useEffect(() => {
+    ref.current = value;
+  });
+  return ref.current;
+}
 
 interface task {
   name: string;
@@ -84,12 +92,27 @@ export default function App(props: AppProps) {
   const taskNoun = taskList.length !== 1 ? 'tasks' : 'task';
   const headingText = `${taskList.length} ${taskNoun} remaining`;
 
+  const listHeadingRef = useRef(null);
+  const prevTaskLength = usePrevious(tasks.length);
+
+  useEffect(() => {
+    if (tasks.length < (prevTaskLength as number)) {
+      listHeadingRef.current.focus();
+    }
+  }, [tasks.length, prevTaskLength]);
+
   return (
     <div className='todoapp stack-large'>
       <h1>TodoMatic</h1>
       <Form addTask={addTask} />
       <div className='filters btn-group stack-exception'>{filterList}</div>
-      <h2 id='list-heading'>{headingText}</h2>
+      <h2
+        id='list-heading'
+        tabIndex={-1}
+        ref={listHeadingRef}
+      >
+        {headingText}
+      </h2>
       <ul
         role='list'
         aria-labelledby='list-heading'
