@@ -1,7 +1,6 @@
 import { ChangeEvent, FormEvent, useEffect, useRef, useState } from 'react';
 
-import { usePrevious } from './usePrevious';
-
+import { usePrevious } from '../hooks/usePrevious';
 
 interface TodoProps {
   name: string;

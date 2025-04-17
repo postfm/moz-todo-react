@@ -3,7 +3,7 @@ import FilterButton from './components/FilterButton';
 import Form from './components/Form';
 import Todo from './components/Todo';
 import { nanoid } from 'nanoid';
-import { usePrevious } from './components/usePrevious';
+import { usePrevious } from './hooks/usePrevious';
 
 interface task {
   name: string;
