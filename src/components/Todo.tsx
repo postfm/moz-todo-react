@@ -1,5 +1,5 @@
 import { ChangeEvent, FormEvent, useEffect, useRef, useState } from 'react';
-function usePrevious(value) {
+function usePrevious(value: boolean) {
   const ref = useRef();
   useEffect(() => {
     ref.current = value;
