@@ -3,14 +3,7 @@ import FilterButton from './components/FilterButton';
 import Form from './components/Form';
 import Todo from './components/Todo';
 import { nanoid } from 'nanoid';
-
-function usePrevious(value: number) {
-  const ref = useRef();
-  useEffect(() => {
-    ref.current = value;
-  });
-  return ref.current;
-}
+import { usePrevious } from './components/usePrevious';
 
 interface task {
   name: string;
@@ -92,11 +85,11 @@ export default function App(props: AppProps) {
   const taskNoun = taskList.length !== 1 ? 'tasks' : 'task';
   const headingText = `${taskList.length} ${taskNoun} remaining`;
 
-  const listHeadingRef = useRef(null);
+  const listHeadingRef = useRef<HTMLHeadingElement>(null);
   const prevTaskLength = usePrevious(tasks.length);
 
   useEffect(() => {
-    if (tasks.length < (prevTaskLength as number)) {
+    if (tasks.length < (prevTaskLength as number) && listHeadingRef.current) {
       listHeadingRef.current.focus();
     }
   }, [tasks.length, prevTaskLength]);
